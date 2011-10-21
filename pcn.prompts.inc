@@ -49,6 +49,8 @@ function pcn_get_missing_prompt_recordings_list($language='en') {
 $pcn_prompts['p_invalid_msg']['en']['text'] = 'Invalid option selected';
 //$pcn_prompts['p_invalid_msg']['en']['file_name'] = 'p_invalid_msg.mp3';
 
+$pcn_prompts['p_no_announcements']['en']['text'] = 'There are no announcements at this time. ';
+
 
 // Prompts associated with the pcn_welcome script
 
@@ -70,11 +72,18 @@ $pcn_prompts['p_thank_you']['ht']['text'] = '(In Creole) Thank you for calling t
 
 // Prompts associated with pcn_options_script
 
-$pcn_prompts['p_options_menu']['en']['text'] = 'To listen to the latest announcement, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
-$pcn_prompts['p_options_menu']['es']['text'] = '(In Spanish) To listen to the latest announcement, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
-$pcn_prompts['p_options_menu']['pt']['text'] = '(In Portuguese) To listen to the latest announcement, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
-$pcn_prompts['p_options_menu']['ht']['text'] = '(In Creole) To listen to the latest announcement, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
+$pcn_prompts['p_options_menu']['en']['text'] = 'Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
+$pcn_prompts['p_options_menu']['es']['text'] = '(In Spanish) Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
+$pcn_prompts['p_options_menu']['pt']['text'] = '(In Portuguese) Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
+$pcn_prompts['p_options_menu']['ht']['text'] = '(In Creole) Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ';
 
 
-// Prompts associated with pcn_play_announcement_script
+// Prompts associated with pcn_play_announcements_script
+
+$pcn_prompts['p_announcement_instructions']['en']['text'] = 'During playback, press any key to go to the announcements menu. ';
+
+$pcn_prompts['p_announcement_menu']['en']['text'] = 'To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ';
+
+$pcn_prompts['p_no_more_announcements']['en']['text'] = 'No more announcements to be played. ';
+
 
