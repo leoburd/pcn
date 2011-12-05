@@ -3,3 +3,4 @@ description = "Provides VoIP Drupal scripts for the PCN project."
 name = "PCN"
 package = "pcn"
 project = "pcn"
+dependencies[] = voipvoice
