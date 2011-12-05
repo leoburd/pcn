@@ -21,7 +21,7 @@ function pcn_install() {
  * Implementation of hook_uninstall().
  */
 function pcn_uninstall() {
- 
+  voipvoice_delete_lexicon('pcn_lexicon');
 }
 
 function _pcn_prompts() {
