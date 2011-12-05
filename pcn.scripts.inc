@@ -91,8 +91,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $voice = $options['voice'];
 
       $script->addLabel('main_menu');
-      $p_options_menu = v('Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, 
-      press the star key. ', NULL, $voice);
+      $p_options_menu = v('Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ', NULL, $voice);
       
       $input_options = array(
         '1' => 'play_announcements',
@@ -147,8 +146,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
           $next = 'announcement_' . ($index+1);
           $script->addLabel($current);
           $script->addSay($title);
-          $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, 
-          press the pound key. ', NULL, $voice);
+          $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ', NULL, $voice);
           $input_options = array(
             '1' => $current_body,
             '2' => $next, 
