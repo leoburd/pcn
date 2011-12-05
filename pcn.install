@@ -12,7 +12,7 @@ function pcn_install() {
   voipvoice_create_voice('pcn-creole', 'ht', 'pcn_lexicon', 'male', 'This is male Creole pcn voice.');
   
   drupal_set_message('You have to enable following languages: "Spanish" and "Portuguese, Portugal"');
-  drupal_set_message('You have to add Haitian Creole (ht) as custom language as its not supported in Drupal.');
+  drupal_set_message('You have to '.l ('add Haitian Creole (ht)','admin/settings/language/add').' as custom language as its not supported in Drupal.');
   //Temporary solution, import phrases
   _pcn_prompts();
 }
