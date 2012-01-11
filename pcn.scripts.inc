@@ -27,7 +27,9 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
     case 'pcn_welcome_script':
       $options['language'] = 'en';
       $options['voice'] = 'pcn';
-
+      $voipvoice = VoipVoice::getVoice('pcn');
+      voipvoice_set_current_voice($voipvoice);
+      
       $script = new VoipScript('pcn_welcome_script');
       $script->addSetVoice('woman');
       $script->addSet('max_session_duration', 0);
@@ -37,12 +39,12 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
           array('@date' => format_date(time())));
       $script->addLog($log_msg, 'MDT');
 
-      $script->addSay(v('Welcome to the Parent Connectors Hotline.', NULL, 'pcn'));
+      $script->addSay(v('Welcome to the Parent Connectors Hotline.'));
 
       $script->addLabel('language_selection');
       
       
-      $p_main_menu = v('For English, press 1. For Spanish, press 2. For Portuguese, press 3. For Creole, press 4. ',  NULL, 'pcn');
+      $p_main_menu = v('For English, press 1. For Spanish, press 2. For Portuguese, press 3. For Creole, press 4. ');
       $input_options = array(
         '1' => 'english_version',
         '2' => 'spanish_version',
@@ -52,7 +54,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
         'i' => 'invalid_option',
         't' => 'invalid_option'
       );
-      $p_invalid_msg = v('Invalid option selected', NULL, 'pcn');
+      $p_invalid_msg = v('Invalid option selected');
       $script->addRunIvrMenu($p_main_menu, $input_options, $p_invalid_msg);
       $script->addGoto('%ivr_option_selected');
 
@@ -89,9 +91,11 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $script = new VoipScript('pcn_options_script');
       //$language = $options['language'];
       $voice = $options['voice'];
+      $voipvoice = VoipVoice::getVoice($voice);
+      voipvoice_set_current_voice($voipvoice);
 
       $script->addLabel('main_menu');
-      $p_options_menu = v('Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ', NULL, $voice);
+      $p_options_menu = v('Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ');
       
       $input_options = array(
         '1' => 'play_announcements',
@@ -100,7 +104,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
         'i' => 'invalid_option',
         't' => 'invalid_option'
       );
-      $p_invalid_msg = v('Invalid option selected', NULL, $voice);
+      $p_invalid_msg = v('Invalid option selected');
       $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
       $script->addGoto('%ivr_option_selected');
 
@@ -116,7 +120,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $script->addGoto('go_back');
 
       $script->addLabel('go_back');
-      $script->addSay(v('Thank you for calling the Parent Connectors hotline. ', NULL, $voice));
+      $script->addSay(v('Thank you for calling the Parent Connectors hotline. '));
       $script->addReturn();
       break;
 
@@ -127,10 +131,10 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       //TODO:
       $announcements = _pcn_get_announcements($language);
       if(!$announcements) {
-        $script->addSay(v('There are no announcements at this time. ', NULL, $voice));
+        $script->addSay(v('There are no announcements at this time. '));
       }
       else {
-        $script->addSay(v('During playback, press any key to go to the announcements menu. ', NULL, $voice));
+        $script->addSay(v('During playback, press any key to go to the announcements menu. '));
         foreach($announcements as $index => $announcement) {
           $title = $announcement['title'];
           if(!$title) {
@@ -146,7 +150,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
           $next = 'announcement_' . ($index+1);
           $script->addLabel($current);
           $script->addSay($title);
-          $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ', NULL, $voice);
+          $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ');
           $input_options = array(
             '1' => $current_body,
             '2' => $next, 
@@ -154,7 +158,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
             'i' => 'invalid_option',
             't' => 'invalid_option'
           );
-          $p_invalid_msg = v('Invalid option selected', NULL, $voice);
+          $p_invalid_msg = v('Invalid option selected');
           $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
           $script->addGoto('%ivr_option_selected');
 
@@ -166,7 +170,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
 
       $no_more = count($announcements);
       $script->addLabel("announcement_$no_more");
-      $script->addSay(v('No more announcements to be played. ',  NULL, $voice));
+      $script->addSay(v('No more announcements to be played. '));
       $script->addGoto('go_back');
 
       $script->addLabel('invalid_option');
