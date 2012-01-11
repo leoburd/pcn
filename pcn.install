@@ -48,6 +48,6 @@ $pcn_prompts['p_announcement_menu']['en']['text'] = 'To play the current announc
 $pcn_prompts['p_no_more_announcements']['en']['text'] = 'No more announcements to be played. ';
 
 foreach ($pcn_prompts as $prompt) {
-   v($prompt['en']['text'], NULL, 'pcn');
+   voipvoice_get_prompt($prompt['en']['text'], NULL, 'pcn');
 }
 }
