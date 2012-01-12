@@ -2,7 +2,7 @@
 /**
  * @file Provides VoIP Drupal functionality for the PCN project
  */
-
+include_once('pcn.features.inc');
 foreach (array('pcn.scripts.inc') as $file) {
   require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . $file);
 }
