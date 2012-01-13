@@ -58,6 +58,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $script->addGoto('%ivr_option_selected');
 
       $script->addLabel('english_version');
+      $options['voice'] = 'pcn';
       $script->addGosub('pcn_options_script', $options);
       $script->addGoto('hang_up');
 
@@ -126,6 +127,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $script = new VoipScript('pcn_play_announcements_script');
       $language = $options['language'];
       $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
       //TODO:
       $announcements = _pcn_get_announcements($language);
       if(!$announcements) {
