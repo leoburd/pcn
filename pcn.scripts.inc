@@ -27,8 +27,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
     case 'pcn_welcome_script':
       $options['language'] = 'en';
       $options['voice'] = 'pcn';
-      $voipvoice = VoipVoice::getVoice('pcn');
-      voipvoice_set_current_voice($voipvoice);
+      voipvoice_set_current_voice('pcn');
       
       $script = new VoipScript('pcn_welcome_script');
       $script->addSetVoice('woman');
@@ -91,8 +90,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $script = new VoipScript('pcn_options_script');
       //$language = $options['language'];
       $voice = $options['voice'];
-      $voipvoice = VoipVoice::getVoice($voice);
-      voipvoice_set_current_voice($voipvoice);
+      voipvoice_set_current_voice($voice);
 
       $script->addLabel('main_menu');
       $p_options_menu = v('Main menu. To listen to the latest announcements, press 1. To record a message or a question to the Parent Connectors, press the star key. ');
