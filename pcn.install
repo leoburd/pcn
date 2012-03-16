@@ -4,12 +4,48 @@
  */
 function pcn_install() {
   //Create pcn lexicon
-  voipvoice_create_lexicon('pcn_lexicon', 'this is pcn VoIP Voice lexicon');
+  $lexicon = array(
+   'lexicon' => 'pcn_lexicon',
+   'description' => 'this is pcn VoIP Voice lexicon',
+  );
+  voipvoice_create_lexicon($lexicon);
+
   //Create pcn voices
-  voipvoice_create_voice('pcn', 'en', 'pcn_lexicon', 'man', 'This is man English pcn voice.');
-  voipvoice_create_voice('pcn-spanish', 'es', 'pcn_lexicon', 'man', 'This is man Spanish pcn voice.');
-  voipvoice_create_voice('pcn-portuguese', 'pt-pt', 'pcn_lexicon', 'man', 'This is man Portuguese pcn voice.');
-  voipvoice_create_voice('pcn-creole', 'ht', 'pcn_lexicon', 'man', 'This is man Creole pcn voice.');
+  $voice1 = array(
+   'name' => 'pcn',
+   'gender' => 'man',
+   'description' => 'This is man English pcn voice.',
+   'language' => 'en',
+   'lexicon' => 'pcn_lexicon',
+  );
+  voipvoice_create_voice($voice1);
+  
+  $voice2 = array(
+   'name' => 'pcn-spanish',
+   'gender' => 'man',
+   'description' => 'This is man Spanish pcn voice.',
+   'language' => 'es',
+   'lexicon' => 'pcn_lexicon',
+  );
+  voipvoice_create_voice($voice2);
+  
+  $voice3 = array(
+   'name' => 'pcn-portuguese',
+   'gender' => 'man',
+   'description' => 'This is man Portuguese pcn voice.',
+   'language' => 'pt-pt',
+   'lexicon' => 'pcn_lexicon',
+  );
+  voipvoice_create_voice($voice3);
+  
+  $voice4 = array(
+   'name' => 'pcn-creole',
+   'gender' => 'man',
+   'description' => 'This is man Creole pcn voice.',
+   'language' => 'ht',
+   'lexicon' => 'pcn_lexicon',
+  );
+  voipvoice_create_voice($voice4);
   
   drupal_set_message('You have to enable following languages: "Spanish" and "Portuguese, Portugal"');
   drupal_set_message('You have to '.l ('add Haitian Creole (ht)','admin/settings/language/add').' as custom language as its not supported in Drupal.');
