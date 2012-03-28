@@ -1,5 +1,22 @@
 <?php
 
+/**
+* Constant definitions
+*/
+
+// TODO: move the following constants to the admin/setup area
+
+// General parameters
+
+define('PCN_MAX_RECORDING_DURATION', 300); // 300 seconds
+
+
+// Email parameters
+
+define('PCN_EMAIL_SUBJECT', 'New PCN message recorded in: @language');
+
+define('PCN_EMAIL_BODY', "Language: @language,\nCaller number: @caller_number,\nStart time: @start_time,\nRecording url: @recording_url,\nRecording duration: @recording_duration seconds");
+
 
 /**
  * Implementation of hook_voipscript_get_script_names()
@@ -181,9 +198,8 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       break;
 
     case 'pcn_record_message_script':
-      $script = new VoipScript('pcn_record_message_script');
-$script->addSay('This is where the message is going to be recorded.');
-      $script->addReturn();
+      $language = $options['language'];
+      $script = _pcn_record_message_script($language);
       break;
 
   }
@@ -223,4 +239,107 @@ function _pcn_get_announcements($language) {
 
   return $announcements;
 }
+
+function _pcn_record_message_script($language) {
+  $script = new VoipScript('pcn_record_message_script');
+
+  $script->addLabel('start');
+  $prompt = v("Please record your message after the beep.  When done, press the pound key.");
+  $timeout = 5;
+  $end_key = '#';
+  $max_length = PCN_MAX_RECORDING_DURATION;
+  $script->addRecord($prompt, $timeout, $end_key, $max_length);
+
+  $args = array('@message' => '%recording_public_url');
+  $script->addSay(v('You said @message', $args));
+
+  $script->addLabel('accept menu');
+  $prompt = v("To accept this recording, press 1.  To record it once again, press 2. To go back to the main menu, press the pound key.");
+  $timeout = 5;
+  $end_key = '';
+  $num_digits = 1;
+  $script->addGetInput($prompt, $num_digits, $end_key, $timeout);
+
+  $script->addGotoIf('accept recording', "^%input_digits == '1'");
+
+  $script->addGotoIf('start', "^%input_digits == '2'");
+
+  $script->addGotoIf('end_recording', "^%input_digits == '#'");
+
+  $script->addSay(v('Invalid input received. Please try again.'));
+  $script->addGoto('accept menu');
+
+  $script->addLabel('accept recording');
+  $script->addSay(v('About to start processing your recording.'));
+  $script->addSet('callback_result',
+    "^_pcn_record_callback(%call_id, %recording_public_url, %recording_duration, '$language')");
+ 
+  $script->addGotoIf('success', "^%callback_result");
+  $script->addSay(v('Error sending your message. Please contact your system administrator. '));
+  $script->addGoto('end_recording');
+  $script->addLabel('success');
+  $script->addSay(v('Your message has been sent. '));
+  $script->addGoto('end_recording');
+
+  $script->addLabel('no input received');
+  $script->addSay(v("No input received. Please try again."));
+  $script->addGoto('start');
+
+  $script->addLabel('end_recording');
+  $script->addReturn();
+
+  return $script;
+}
+
+/**
+ * Callback associated with pcn_record_message_script.
+ */
+function _pcn_record_callback($call_id, $recording_url, $recording_duration, $language='') {
+watchdog('pcn',"_pcn_record_callback($call_id, $recording_url, $recording_duration, $language)");
+
+  $rc = TRUE;
+
+  $cid = VoipCall::getCidFromCallId($call_id);
+  $call = VoipCall::load($cid);
+  $caller_number = $call->getCallerNumber();
+  $start_time = $call->getStartTime();
+
+  $options['call_id'] = $call_id;
+  $options['caller_number'] = $caller_number;
+  $options['start_time'] = format_date($start_time);
+  $options['recording_url'] = $recording_url;
+  $options['recording_duration'] = $recording_duration;
+  $options['language'] = $language;
+
+  // send email notification
+  $to = variable_get('pcn_email', NULL);
+watchdog('pcn', "current email address: $to");
+  if($to) {
+    $mail=drupal_mail('pcn', 'new_recording', $to, language_default(), $options);
+    $rc = $mail['result'];
+  }
+
+  if (!$rc){
+    $params = array('@to' => $to, '@options' => print_r($options, true));
+    watchdog('pcn', 'Error sending recorded message to @to with the following options: @options', $params, WATCHDOG_ERROR);
+  }
+  return $rc;
+}
+
+/**
+* Implementation of hook_mail
+*/
+function pcn_mail($key, &$message, $options) {
+ switch ($key) {
+   case 'new_recording':
+     foreach($options as $option_name => $option_value) {
+       $params["@$option_name"] = $option_value;
+     }
+     $message['subject'] = t(PCN_EMAIL_SUBJECT, $params);
+     $message['body'] = t(PCN_EMAIL_BODY, $params);
+     break;
+  }
+}
+
+
 
