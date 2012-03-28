@@ -145,13 +145,12 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
       $language = $options['language'];
       $voice = $options['voice'];
       voipvoice_set_current_voice($voice);
-      //TODO:
       $announcements = _pcn_get_announcements($language);
       if(!$announcements) {
         $script->addSay(v('There are no announcements at this time. '));
       }
       else {
-        $script->addSay(v('During playback, press any key to go to the announcements menu. '));
+//        $script->addSay(v('During playback, press any key to go to the announcements menu. '));
         foreach($announcements as $index => $announcement) {
           $title = $announcement['title'];
           if(!$title) {
