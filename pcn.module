@@ -34,8 +34,8 @@ function pcn_menu() {
 function pcn_admin_form($configuration) {
   $form['pcn_email'] = array(
     '#type' => 'textfield',
-    '#title' => t('Announcement destination email'),
-    '#description' => t("The email address(es) to send the announcements to. If empty, no email messages will be sent."),
+    '#title' => t("Recording's destination email"),
+    '#description' => t("The email address(es) to send the recordings to. If empty, no email messages will be sent."),
     '#default_value' => variable_get('pcn_email', ''),
   );
 
@@ -49,7 +49,7 @@ function pcn_admin_form($configuration) {
 
 function pcn_admin_form_submit($form, &$form_state) {
   if ($form_state['values']['pcn_email']) {
-    drupal_set_message(t('Announcement destination email updated.'));
+    drupal_set_message(t('Destination email updated.'));
     $email = trim($form_state['values']['pcn_email']);
     variable_set('pcn_email', $email);
   }
