@@ -198,6 +198,8 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
 
     case 'pcn_record_message_script':
       $language = $options['language'];
+      $voice = $options['voice'];
+      voipvoice_set_current_voice($voice);
       $script = _pcn_record_message_script($language);
       break;
 
