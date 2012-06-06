@@ -157,30 +157,37 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
             $options = array('@nid' => $announcement['nid'], '@lang' => $language);
             $text = 'Translation for node @nid in @lang could not be found.';
             watchdog('pcn', $text, $options, WATCHDOG_WARNING);
-            continue;
+//            continue;
           }
-          $body = $announcement['body'];
-          $created = $announcement['created'];
-          $current = "announcement_$index";
-          $current_body = "body_$index";
-          $next = 'announcement_' . ($index+1);
-          $script->addLabel($current);
-          $script->addSay($title);
-          $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ');
-          $input_options = array(
-            '1' => $current_body,
-            '2' => $next, 
-            '#' => 'go_back',
-            'i' => 'invalid_option',
-            't' => 'invalid_option'
-          );
-          $p_invalid_msg = v('Invalid option selected');
-          $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
-          $script->addGoto('%ivr_option_selected');
+          else {
+            $body = $announcement['body'];
+            $created = $announcement['created'];
+            $current = "announcement_$index";
+            $current_body = "body_$index";
+            $next = 'announcement_' . ($index+1);
+            $script->addLabel($current);
+            $script->addSay($title);
+            $p_options_menu = v('To play the current announcement, press 1. To go to the next announcement, press 2. To go back to the main menu, press the pound key. ');
+            $input_options = array(
+              '1' => $current_body,
+              '2' => $next, 
+              '#' => 'go_back',
+              'i' => 'invalid_option',
+              't' => 'invalid_option'
+            );
+            $p_invalid_msg = v('Invalid option selected');
+            $script->addRunIvrMenu($p_options_menu, $input_options, $p_invalid_msg);
+  $nid = $announcement['nid'];
+  $node = node_load($nid);
+  $n_title = $node->title;
+  $script->addLog("i: $index, l: $current, n: $nid, caller typed %ivr_option_selected. ");
+  $script->addSay('you typed %ivr_option_selected. ');
+            $script->addGoto('%ivr_option_selected');
 
-          $script->addLabel($current_body);
-          $script->addGetInput($body, 1, '#', 3);
-          $script->addGoto($current); 
+            $script->addLabel($current_body);
+            $script->addGetInput($body, 1, '#', 3);
+            $script->addGoto($current); 
+          }
         }
       }
 
@@ -215,20 +222,20 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
 
 function _pcn_get_announcements($language) {
   $announcements = array();
-
+  $field_audio_title_name = 'field_audio_title_' . $language;
   $sql = "SELECT n.nid AS nid FROM {node} n WHERE (n.type = 'announcement') AND (n.status <> 0) AND (n.promote <> 0) ORDER BY n.created DESC";
   $result = db_query($sql);
   // the announcements will be played in the order they were created; not in the order in which they were updated/modified
   while($o = db_fetch_object($result)) {
     $n = node_load($o->nid);
+    $field_audio_title = $n->$field_audio_title_name;
+    if(!$field_audio_title[0]) {
+      continue;
+    }
     $announcement['nid'] = $n->nid;
     $announcement['created'] = $n->created;
-    $field_audio_title_name = 'field_audio_title_' . $language;
-    $field_audio_title = $n->$field_audio_title_name;
-    if($field_audio_title[0]) {
-      $audio_title_url = url($field_audio_title[0]['filepath'], array('absolute' => TRUE));
-      $announcement['title'] = $audio_title_url;
-    }
+    $audio_title_url = url($field_audio_title[0]['filepath'], array('absolute' => TRUE));
+    $announcement['title'] = $audio_title_url;
     $field_audio_body_name = 'field_audio_body_' . $language;
     $field_audio_body = $n->$field_audio_body_name;
     if($field_audio_body[0]) {
@@ -237,7 +244,6 @@ function _pcn_get_announcements($language) {
     }
     $announcements[] = $announcement;
   }
-
   return $announcements;
 }
 
