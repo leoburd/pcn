@@ -192,7 +192,11 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
     case 'pcn_record_message_script':
       $language = $options['language'];
       $voice = $options['voice'];
+/**
+  TODO: Until the prompts associated with this script get recorded, we'll only be saying prompts in English
       voipvoice_set_current_voice($voice);
+**/
+voipvoice_set_current_voice('pcn');
       $script = _pcn_record_message_script($language);
       break;
 
