@@ -160,7 +160,7 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
             continue;
           }
           $body = $announcement['body'];
-          $changed = $announcement['changed'];
+          $created = $announcement['created'];
           $current = "announcement_$index";
           $current_body = "body_$index";
           $next = 'announcement_' . ($index+1);
@@ -216,13 +216,13 @@ function pcn_voipscript_load_script($script_name, $options=NULL) {
 function _pcn_get_announcements($language) {
   $announcements = array();
 
-  $sql = "SELECT n.nid AS nid FROM {node} n WHERE (n.type = 'announcement') AND (n.status <> 0) AND (n.promote <> 0) ORDER BY n.changed DESC";
+  $sql = "SELECT n.nid AS nid FROM {node} n WHERE (n.type = 'announcement') AND (n.status <> 0) AND (n.promote <> 0) ORDER BY n.created DESC";
   $result = db_query($sql);
-  // the following code assumes that there will be only one announcement promoted at a time
+  // the announcements will be played in the order they were created; not in the order in which they were updated/modified
   while($o = db_fetch_object($result)) {
     $n = node_load($o->nid);
     $announcement['nid'] = $n->nid;
-    $announcement['changed'] = $n->changed;
+    $announcement['created'] = $n->created;
     $field_audio_title_name = 'field_audio_title_' . $language;
     $field_audio_title = $n->$field_audio_title_name;
     if($field_audio_title[0]) {
